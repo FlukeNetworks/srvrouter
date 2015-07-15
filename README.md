@@ -1,5 +1,7 @@
 # srvrouter
 
+**WIP**
+
 Generates `haproxy.cfg` files from DNS SRV records. Primarily useful for load balancing services discovered through DNS.
 
 ## Usage

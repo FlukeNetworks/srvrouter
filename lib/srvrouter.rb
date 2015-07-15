@@ -1,4 +1,5 @@
 require "srvrouter/version"
+require "resolv"
 
 module SRVRouter
   class HAProxyConfig
@@ -13,5 +14,17 @@ module SRVRouter
     def get_binding
       binding()
     end
+  end
+
+  def lookup_srv(service)
+    answers = []
+    Resolv::DNS.open() do |resolver|
+      answers = resolver.getresources(service, Resolv::DNS::Resource::IN::SRV)
+    end
+    ret = []
+    answers.each do |ans|
+      ret << "#{ans.target}:#{ans.port}"
+    end
+    return ret
   end
 end

@@ -4,15 +4,22 @@ require 'erb'
 require 'optparse'
 require 'srvrouter'
 
+include SRVRouter
+
 template_file = File.join(File.dirname(File.expand_path(__FILE__)), "../templates/haproxy.cfg.erb")
 
 options = {
   :service => 'service',
-  :port => 80
+  :port => 80,
+  :name => 'service.marathon.mesos',
 }
 
 OptionParser.new do |opts|
   opts.banner = "Usage: srvrouter [options]"
+
+  opts.on("-n", "--name NAME", "DNS name to lookup") do |name|
+    options[:name] = name
+  end
 
   opts.on("-s", "--service SERVICE", "Service to monitor") do |service|
     options[:service] = service
@@ -27,7 +34,8 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-cfg = SRVRouter::HAProxyConfig.new(options[:service], options[:port], ["10.0.0.46:31001"])
+answers = SRVRouter::lookup_srv(options[:name])
+cfg = SRVRouter::HAProxyConfig.new(options[:service], options[:port], answers)
 renderer = ERB.new(File.read(template_file))
 output = renderer.result(cfg.get_binding)
 
