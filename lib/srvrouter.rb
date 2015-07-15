@@ -25,6 +25,6 @@ module SRVRouter
     answers.each do |ans|
       ret << "#{ans.target}:#{ans.port}"
     end
-    return ret
+    return ret.sort
   end
 end
