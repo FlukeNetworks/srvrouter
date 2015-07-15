@@ -1,7 +1,7 @@
 frontend local
     <%= "bind *:#{@frontend_port}" %>
     mode tcp
-    <%= "default backend #{@service}" %>
+    <%= "default_backend #{@service}" %>
 
 <%= "backend #{@service}" %>
     mode tcp
