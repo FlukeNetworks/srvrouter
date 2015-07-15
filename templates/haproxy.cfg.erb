@@ -6,4 +6,5 @@ frontend local
 <%= "backend #{@service}" %>
     mode tcp
     balance roundrobin
-    <% @backends.each_with_index do |backend, index| %><%= "server #{@service}-#{index} #{backend} check" %><% end %>
+    <% @backends.each_with_index do |backend, index| %><%= "server #{@service}-#{index} #{backend} check" %>
+    <% end %>
