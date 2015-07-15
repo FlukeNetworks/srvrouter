@@ -6,4 +6,5 @@ while [ true ]; do
 	if [ ! -z "$changed" ]; then
 		supervisorctl restart haproxy
 	fi
+	sleep 5
 done
