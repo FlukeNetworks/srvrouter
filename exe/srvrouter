@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'erb'
+require 'optparse'
+require 'srvrouter'
+
+template_file = File.join(File.dirname(File.expand_path(__FILE__)), "../templates/haproxy.cfg.erb")
+
+options = {
+  :service => 'service',
+  :port => 80
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: srvrouter [options]"
+
+  opts.on("-s", "--service SERVICE", "Service to monitor") do |service|
+    options[:service] = service
+  end
+
+  opts.on("-p", "--port PORT", Integer, "Port to listen on") do |port|
+    options[:port] = port
+  end
+
+  opts.on("-o", "--output FILE", "File to write to") do |out_file|
+    options[:output] = out_file
+  end
+end.parse!
+
+cfg = SRVRouter::HAProxyConfig.new(options[:service], options[:port], ["10.0.0.46:31001"])
+renderer = ERB.new(File.read(template_file))
+output = renderer.result(cfg.get_binding)
+
+if options[:output] != nil
+  File.open(options[:output], "w") do |file|
+    file.write(output)
+  end
+else
+  puts output
+end

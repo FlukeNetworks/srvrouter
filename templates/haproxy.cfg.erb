@@ -1,0 +1,9 @@
+frontend local
+    <%= "bind *:#{@frontend_port}" %>
+    mode tcp
+    <%= "default backend #{@service}" %>
+
+<%= "backend #{@service}" %>
+    mode tcp
+    balance roundrobin
+    <% @backends.each_with_index do |backend, index| %><%= "server #{@service}-#{index} #{backend} check" %><% end %>
